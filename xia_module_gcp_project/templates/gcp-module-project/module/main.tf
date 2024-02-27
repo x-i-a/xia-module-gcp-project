@@ -29,6 +29,7 @@ locals {
         repository_name   = app["repository_name"]
         project_id        = "${local.project_prefix}${env_name}"
         match_branch      = env["match_branch"]
+        match_event       = lookup(env, "event_name", "push")
       }
     ]
   ]))
@@ -96,11 +97,12 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
   description  = "Provider for GitHub Actions of ${each.value["repository_name"]}"
 
    # Attribute mapping / condition from the OIDC token to Google Cloud attributes
-  attribute_condition = "assertion.sub == 'repo:${each.value["repository_owner"]}/${each.value["repository_name"]}:environment:${each.value["env_name"]}' && assertion.ref.matches('${each.value["match_branch"]}')"
+  attribute_condition = "assertion.sub == 'repo:${each.value["repository_owner"]}/${each.value["repository_name"]}:environment:${each.value["env_name"]}' && assertion.ref.matches('${each.value["match_branch"]} && assertion.event_name.matches('${each.value["event_name"]}')"
 
   attribute_mapping = {
     "google.subject" = "assertion.sub",
     "attribute.actor" = "assertion.actor",
+    "attribute.event_name" = "assertion.event_name",
     "attribute.repository" = "assertion.repository",
     "attribute.repository_owner" = "assertion.repository_owner"
     "attribute.ref" = "assertion.ref"
