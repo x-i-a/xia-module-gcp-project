@@ -44,22 +44,12 @@ resource "google_project" "env_projects" {
   billing_account = local.billing_account
 }
 
-resource "google_project_service" "service_usage_api" {
-  for_each = local.environment_dict
-
-  project = google_project.env_projects[each.key].project_id
-  service = "serviceusage.googleapis.com"
-  disable_on_destroy = false
-}
-
 resource "google_project_service" "cloud_resource_manager_api" {
   for_each = local.environment_dict
 
   project = google_project.env_projects[each.key].project_id
   service = "cloudresourcemanager.googleapis.com"
   disable_on_destroy = false
-
-  depends_on = [google_project_service.service_usage_api]
 }
 
 resource "google_project_service" "identity_and_access_manager_api" {
