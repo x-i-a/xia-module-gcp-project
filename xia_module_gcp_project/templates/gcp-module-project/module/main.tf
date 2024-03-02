@@ -29,7 +29,7 @@ locals {
         repository_name   = app["repository_name"]
         project_id        = "${local.project_prefix}${env_name}"
         match_branch      = env["match_branch"]
-        match_event       = lookup(env, "event_name", "push")
+        match_event       = lookup(env, "match_event", "push")
       }
     ]
   ]))
