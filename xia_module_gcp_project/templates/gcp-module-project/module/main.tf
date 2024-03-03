@@ -137,7 +137,7 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
 resource "google_storage_bucket_iam_member" "tfstate_bucket_modify" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
   bucket = local.tf_bucket_name
-  role   = "roles/storage.objectCreator"
+  role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
 
   condition {
