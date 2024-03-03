@@ -140,6 +140,32 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_assign" {
   }
 }
 
+resource "github_actions_environment_variable" "action_var_cosmos_name" {
+  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+
+  repository       = each.value["repository_name"]
+  environment      = each.value["env_name"]
+  variable_name    = "COSMOS_NAME"
+  value            = local.cosmos_name
+}
+
+resource "github_actions_environment_variable" "action_var_realm_name" {
+  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+
+  repository       = each.value["repository_name"]
+  environment      = each.value["realm_name"]
+  variable_name    = "REALM_NAME"
+  value            = local.cosmos_name
+}
+
+resource "github_actions_environment_variable" "action_var_realm_name" {
+  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+
+  repository       = each.value["repository_name"]
+  environment      = each.value["realm_name"]
+  variable_name    = "APP_NAME"
+  value            = each.value["app_name"]
+}
 
 resource "github_actions_environment_variable" "action_var_project_id" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
