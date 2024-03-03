@@ -127,6 +127,13 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
   ]
 }
 
+resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
+  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  bucket = local.tf_bucket_name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
+}
+
 resource "google_storage_bucket_iam_member" "tfstate_bucket_modify" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
   bucket = local.tf_bucket_name
@@ -136,7 +143,7 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_modify" {
   condition {
     title       = "PrefixCondition"
     description = "Grants access to objects in a specific directory"
-    expression  = "resource.name.startsWith('projects/_/buckets/${local.tf_bucket_name}/objects/${local.realm_name}/${local.foundation_name}/${each.value["app_name"]}/${each.value["env_name"]}/terraform/state/')"
+    expression  = "resource.name.startsWith('projects/_/buckets/${local.tf_bucket_name}/objects/${local.realm_name}/_/${local.foundation_name}/${each.value["app_name"]}/${each.value["env_name"]}/terraform/state/')"
   }
 }
 
