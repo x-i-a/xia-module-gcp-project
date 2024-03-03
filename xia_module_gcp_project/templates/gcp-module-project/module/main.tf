@@ -9,8 +9,12 @@ terraform {
 locals {
   project = yamldecode(file(var.project_file))
   landscape = yamldecode(file(var.landscape_file))
-  tf_bucket_name = lookup(lookup(local.landscape, "settings", {}), "cosmos_name")
   applications = yamldecode(file(var.applications_file))
+  settings = lookup(local.landscape, "settings", {})
+  cosmos_name = local.settings["cosmos_name"]
+  realm_name = local.settings["realm_name"]
+  foundation_name = local.settings["foundation_name"]
+  tf_bucket_name = lookup(local.settings, "cosmos_name")
   folder_id = lookup(local.project, "folder_id", null)
   project_prefix = local.project["project_prefix"]
   billing_account = local.project["billing_account"]
@@ -128,6 +132,12 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_assign" {
   bucket = local.tf_bucket_name
   role   = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
+
+  condition {
+    title       = "PrefixCondition"
+    description = "Grants access to objects in a specific directory"
+    expression  = "resource.name.startsWith('projects/_/buckets/${local.tf_bucket_name}/objects/${local.realm_name}/${local.foundation_name}')"
+  }
 }
 
 
