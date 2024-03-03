@@ -148,6 +148,15 @@ resource "github_actions_environment_variable" "action_var_project_id" {
   value            = each.value["project_id"]
 }
 
+resource "github_actions_environment_variable" "action_var_env_name" {
+  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+
+  repository       = each.value["repository_name"]
+  environment      = each.value["env_name"]
+  variable_name    = "ENV_NAME"
+  value            = each.value["env_name"]
+}
+
 resource "github_actions_environment_variable" "action_var_wip_name" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
 
