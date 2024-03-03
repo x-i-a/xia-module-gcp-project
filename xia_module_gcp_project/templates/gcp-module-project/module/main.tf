@@ -129,7 +129,6 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_assign" {
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
 }
 
-
 resource "github_actions_environment_variable" "action_var_project_id" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
 
