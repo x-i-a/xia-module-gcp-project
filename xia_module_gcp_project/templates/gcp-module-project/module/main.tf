@@ -60,15 +60,6 @@ resource "google_project_service" "identity_and_access_manager_api" {
   disable_on_destroy = false
 }
 
-resource "google_storage_bucket" "tfstate-bucket" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
-
-  project       = local.landscape["settings"]["cosmos_name"]
-  name          = "${local.landscape["settings"]["realm_name"]}_${each.value["app_name"]}_${each.value["env_name"]}"
-  location      = local.landscape["settings"]["foundation_region"]
-  force_destroy = true
-}
-
 resource "google_iam_workload_identity_pool" "github_pool" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
 
