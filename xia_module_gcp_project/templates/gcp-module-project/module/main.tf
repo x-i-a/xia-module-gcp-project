@@ -124,7 +124,7 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
 
 resource "google_storage_bucket_iam_member" "tfstate_bucket_assign" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
-  bucket = google_storage_bucket.tfstate-bucket[each.key].id
+  bucket = "${local.landscape["settings"]["realm_name"]}_${each.value["app_name"]}_${each.value["env_name"]}"
   role   = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
 }
