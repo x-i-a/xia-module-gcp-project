@@ -162,5 +162,5 @@ resource "github_actions_environment_variable" "action_var_tf_bucket" {
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
   variable_name    = "TF_BUCKET_NAME"
-  value            = google_storage_bucket.tfstate-bucket[each.key].id
+  value            = "${local.landscape["settings"]["realm_name"]}_${each.value["app_name"]}_${each.value["env_name"]}"
 }
