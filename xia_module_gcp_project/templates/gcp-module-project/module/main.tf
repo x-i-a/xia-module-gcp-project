@@ -143,7 +143,7 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_modify" {
   condition {
     title       = "PrefixCondition"
     description = "Grants access to objects in a specific directory"
-    expression  = "resource.name.startsWith('projects/_/buckets/${local.tf_bucket_name}/objects/${local.realm_name}/_/${local.foundation_name}/${each.value["app_name"]}/${each.value["env_name"]}/terraform/state/')"
+    expression  = "resource.name.startsWith('projects/_/buckets/${local.tf_bucket_name}/objects/${local.realm_name}/_/${local.foundation_name}/${each.value["app_name"]}/${each.value["env_name"]}/')"
   }
 }
 
