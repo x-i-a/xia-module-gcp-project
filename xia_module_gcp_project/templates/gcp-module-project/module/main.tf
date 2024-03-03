@@ -60,6 +60,15 @@ resource "google_project_service" "identity_and_access_manager_api" {
   disable_on_destroy = false
 }
 
+resource "google_storage_bucket" "tfstate-bucket" {
+  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+
+  project       = local.landscape["settings"]["cosmos_name"]
+  name          = "${local.landscape["settings"]["realm_name"]}_${each.value["app_name"]}_${each.value["env_name"]}"
+  location      = local.landscape["settings"]["foundation_region"]
+  force_destroy = true
+}
+
 resource "google_iam_workload_identity_pool" "github_pool" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
 
@@ -124,10 +133,11 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
 
 resource "google_storage_bucket_iam_member" "tfstate_bucket_assign" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
-  bucket = "${local.landscape["settings"]["realm_name"]}_${each.value["app_name"]}_${each.value["env_name"]}"
+  bucket = google_storage_bucket.tfstate-bucket[each.key].id
   role   = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
 }
+
 
 resource "github_actions_environment_variable" "action_var_project_id" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
@@ -162,5 +172,5 @@ resource "github_actions_environment_variable" "action_var_tf_bucket" {
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
   variable_name    = "TF_BUCKET_NAME"
-  value            = "${local.landscape["settings"]["realm_name"]}_${each.value["app_name"]}_${each.value["env_name"]}"
+  value            = google_storage_bucket.tfstate-bucket[each.key].id
 }
