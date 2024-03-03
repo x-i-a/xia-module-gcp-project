@@ -158,7 +158,7 @@ resource "github_actions_environment_variable" "action_var_realm_name" {
   value            = local.cosmos_name
 }
 
-resource "github_actions_environment_variable" "action_var_realm_name" {
+resource "github_actions_environment_variable" "action_var_app_name" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
 
   repository       = each.value["repository_name"]
