@@ -164,7 +164,7 @@ resource "github_actions_environment_variable" "action_var_foundation_name" {
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
   variable_name    = "FOUNDATION_NAME"
-  value            = each.value["foundation_name"]
+  value            = local.foundation_name
 }
 
 resource "github_actions_environment_variable" "action_var_app_name" {
