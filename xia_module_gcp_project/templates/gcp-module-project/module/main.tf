@@ -19,7 +19,7 @@ locals {
   project_prefix = local.project["project_prefix"]
   billing_account = local.project["billing_account"]
   environment_dict = local.landscape["environments"]
-  activated_apps = lookup(lookup(local.landscape["modules"], "gcp_module_project", {}), "applications", [])
+  activated_apps = lookup(lookup(local.landscape["modules"], "gcp-module-project", {}), "applications", [])
 }
 
 locals {
