@@ -4,7 +4,6 @@ modules = {
     "gcp-module-project": "Project"
 }
 
-
 __all__ = [
     "Project"
 ]
