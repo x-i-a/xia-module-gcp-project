@@ -134,19 +134,6 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
 }
 
-resource "google_storage_bucket_iam_member" "tfstate_bucket_modify" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
-  bucket = local.tf_bucket_name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
-
-  condition {
-    title       = "PrefixCondition"
-    description = "Grants access to objects in a specific directory"
-    expression  = "resource.name.startsWith('projects/_/buckets/${local.tf_bucket_name}/objects/${local.realm_name}/_/${local.foundation_name}/${each.value["app_name"]}/${each.value["env_name"]}/')"
-  }
-}
-
 resource "github_actions_environment_variable" "action_var_cosmos_name" {
   for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
 
