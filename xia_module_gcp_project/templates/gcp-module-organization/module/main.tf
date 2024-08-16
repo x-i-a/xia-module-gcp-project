@@ -120,6 +120,24 @@ data "google_organization" "cosmos_org" {
   domain = local.cosmos_org
 }
 
+resource "google_project_service" "service_usage_api" {
+  project = local.cosmos_project
+  service = "serviceusage.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "cloud_resource_manager_api" {
+  project = local.cosmos_project
+  service = "cloudresourcemanager.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "identity_and_access_manager_api" {
+  project = local.cosmos_project
+  service = "iam.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_folder" "realm_l1_folders" {
   for_each = local.level_1_realms
   display_name = each.value.name
