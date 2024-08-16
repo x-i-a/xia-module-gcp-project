@@ -13,7 +13,7 @@ locals {
     for foundation, foundation_details in lookup(local.structure, "foundations", {}) : foundation => {
       name = foundation
       parent = "root"
-      repository = lookup(coalesce(foundation_details, {}), "repository", "foundation-${foundation}")
+      repository = lookup(foundation_details == null ?  {} : foundation_details, "repository", "foundation-${foundation}")
     }
   }
 
@@ -30,7 +30,7 @@ locals {
         for foundation, foundation_details in lookup(details, "foundations", {}) : {
           realm = realm
           foundation = foundation
-          repository = lookup(coalesce(foundation_details, {}), "repository", "foundation-${foundation}")
+          repository = lookup(foundation_details == null ?  {} : foundation_details, "repository", "foundation-${foundation}")
         }
       ]
     ]) : "${pair.realm}/${pair.foundation}" => {
@@ -62,7 +62,7 @@ locals {
             realm = realm
             sub_realm = sub_realm
             foundation = foundation
-            repository = lookup(coalesce(foundation_details, {}), "repository", "foundation-${foundation}")
+            repository = lookup(foundation_details == null ?  {} : foundation_details, "repository", "foundation-${foundation}")
           }
         ]
       ]
@@ -100,7 +100,7 @@ locals {
               sub_realm = sub_realm
               bis_realm = bis_realm
               foundation = foundation
-              repository = lookup(coalesce(foundation_details, {}), "repository", "foundation-${foundation}")
+              repository = lookup(foundation_details == null ?  {} : foundation_details, "repository", "foundation-${foundation}")
             }
           ]
         ]
