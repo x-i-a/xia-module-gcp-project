@@ -36,6 +36,7 @@ locals {
     ]) : "${pair.realm}/${pair.foundation}" => {
       parent = pair.realm
       name = pair.foundation
+      repository = pair.repository
     }
   }
 
@@ -68,6 +69,7 @@ locals {
     ]) : "${pair.realm}/${pair.sub_realm}/${pair.foundation}" => {
       parent = "${pair.realm}/${pair.sub_realm}"
       name = pair.foundation
+      repository = pair.repository
     }
   }
 
@@ -106,6 +108,7 @@ locals {
     ]) : "${pair.realm}/${pair.sub_realm}/${pair.bis_realm}/${pair.foundation}" => {
       parent = "${pair.realm}/${pair.sub_realm}/${pair.bis_realm}"
       name = pair.foundation
+      repository = pair.repository
     }
   }
 
