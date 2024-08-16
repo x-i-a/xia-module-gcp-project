@@ -75,11 +75,11 @@ resource "google_folder_iam_member" "foundation_admin_sa_owner" {
 resource "google_iam_workload_identity_pool" "github_pool" {
   for_each = local.all_foundations
 
-  workload_identity_pool_id = "gh-${each.value.name}"
+  workload_identity_pool_id = "wip-${each.value.name}"
   project  = local.cosmos_project
 
   # Workload Identity Pool configuration
-  display_name = "gh-${each.value.name}"
+  display_name = "wip-${each.value.name}"
   description  = "Pool for GitHub Actions of ${each.value.name}"
 
   # Make sure the pool is in a state to be used
