@@ -71,3 +71,47 @@ resource "google_folder_iam_member" "foundation_admin_sa_owner" {
   role = "roles/owner"
   member = "serviceAccount:${google_service_account.foundation_admin_sa[each.key].email}"
 }
+
+resource "google_iam_workload_identity_pool" "github_pool" {
+  for_each = local.all_foundations
+
+  workload_identity_pool_id = "gh-${each.value.name}"
+  project  = local.cosmos_project
+
+  # Workload Identity Pool configuration
+  display_name = "gh-${each.value.name}"
+  description  = "Pool for GitHub Actions of ${each.value.name}"
+
+  # Make sure the pool is in a state to be used
+  disabled = false
+
+  depends_on = [google_project_service.cloud_resource_manager_api]
+}
+
+resource "google_iam_workload_identity_pool_provider" "github_provider" {
+  for_each = local.all_foundations
+
+  workload_identity_pool_id = google_iam_workload_identity_pool.github_pool[each.key].workload_identity_pool_id
+  workload_identity_pool_provider_id     = "ghp-${each.value.name}"
+  project  = local.cosmos_project
+
+  # Provider configuration specific to GitHub
+  display_name = "ghp-${each.value.name}"
+  description  = "Provider for GitHub Actions of ${each.value.name}"
+
+   # Attribute mapping / condition from the OIDC token to Google Cloud attributes
+  attribute_condition = "assertion.sub == 'repo:${local.github_owner}/foundation-${each.value.name}' && assertion.ref.matches('main')')"
+
+  attribute_mapping = {
+    "google.subject" = "assertion.sub",
+    "attribute.actor" = "assertion.actor",
+    "attribute.event_name" = "assertion.event_name",
+    "attribute.repository" = "assertion.repository",
+    "attribute.repository_owner" = "assertion.repository_owner"
+    "attribute.ref" = "assertion.ref"
+  }
+
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
+}

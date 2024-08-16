@@ -5,6 +5,7 @@ locals {
   cosmos_project = local.settings["cosmos_project"]
   cosmos_name = local.settings["cosmos_name"]
   structure = local.landscape["structure"]
+  github_owner = lookup(local.settings, "github_owner", "")
 }
 
 locals {
