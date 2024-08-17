@@ -122,3 +122,16 @@ resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.foundation_admin_sa[each.key].email}"
 }
+
+resource "google_storage_bucket_iam_member" "tfstate_bucket_modify" {
+  for_each = local.all_foundations
+  bucket = local.cosmos_bucket
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.foundation_admin_sa[each.key].email}"
+
+  condition {
+    title       = "PrefixCondition"
+    description = "Grants access to objects of foundation directory"
+    expression  = "resource.name.startsWith('projects/_/buckets/${local.cosmos_bucket}/objects/${each.value.parent}/_/${each.value.name}/_/')"
+  }
+}
