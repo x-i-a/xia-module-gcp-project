@@ -2,9 +2,9 @@ locals {
   landscape = yamldecode(file(var.landscape_file))
   settings = lookup(local.landscape, "settings", {})
   cosmos_org = local.settings["cosmos_org"]
-  cosmos_bucket = local.settings["cosmos_bucket"]
-  cosmos_project = local.settings["cosmos_project"]
   cosmos_name = local.settings["cosmos_name"]
+  cosmos_bucket = lookup(local.settings, "cosmos_bucket", cosmos_name)
+  cosmos_project = local.settings["cosmos_project"]
   structure = local.landscape["structure"]
   github_owner = lookup(local.settings, "github_owner", "")
 }
