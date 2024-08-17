@@ -115,3 +115,10 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
 }
+
+resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
+  for_each = local.all_foundations
+  bucket = local.cosmos_bucket
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.foundation_admin_sa[each.key].email}"
+}
