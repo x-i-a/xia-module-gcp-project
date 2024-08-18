@@ -9,7 +9,7 @@ variable "config_file" {
 }
 
 variable "landscape" {
-  type = map(map(any))
+  type = any
   description = "Landscape Configuration"
 }
 
