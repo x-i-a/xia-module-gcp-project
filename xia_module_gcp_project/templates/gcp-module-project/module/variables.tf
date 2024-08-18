@@ -9,12 +9,12 @@ variable "config_file" {
 }
 
 variable "landscape" {
-  type = map(any)
+  type = map(map(any))
   description = "Landscape Configuration"
 }
 
 variable "applications" {
-  type = map(map(any))
+  type = map(any)
   description = "Application Configuration"
 }
 
