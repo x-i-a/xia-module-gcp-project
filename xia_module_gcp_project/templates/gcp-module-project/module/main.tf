@@ -26,7 +26,7 @@ locals {
   filtered_applications = { for app_name, app in local.applications : app_name => app if contains(local.activated_apps, app_name) }
 
   all_pool_settings = toset(flatten([
-    for app_name, app in [] : [
+    for app_name, app in local.filtered_applications : [
       for env_name, env in local.environment_dict : {
         app_name          = app_name
         env_name          = env_name

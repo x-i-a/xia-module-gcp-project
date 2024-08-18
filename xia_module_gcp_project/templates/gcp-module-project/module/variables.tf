@@ -13,6 +13,11 @@ variable "applications_file" {
   description = "Application config file"
 }
 
+variable "environment_dict" {
+  type = map(any)
+  description = "Environment Configuration"
+}
+
 variable "app_env_config" {
   type = map(any)
   description = "Application Environment Configuration"
