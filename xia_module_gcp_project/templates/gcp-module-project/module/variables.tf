@@ -29,8 +29,8 @@ variable "app_env_config" {
   description = "Application Environment Configuration"
 }
 
-variable "app_to_activate" {
+variable "module_app_to_activate" {
   type = list(any)
-  description = "Application to be activated"
+  description = "Application to be activated for all modules"
 }
 
