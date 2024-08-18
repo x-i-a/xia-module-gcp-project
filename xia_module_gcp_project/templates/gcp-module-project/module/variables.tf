@@ -12,3 +12,9 @@ variable "applications_file" {
   type = string
   description = "Application config file"
 }
+
+variable "app_env_config" {
+  type = map(any)
+  description = "Application Environment Configuration"
+}
+
