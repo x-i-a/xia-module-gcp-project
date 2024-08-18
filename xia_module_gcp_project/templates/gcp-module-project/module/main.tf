@@ -15,9 +15,6 @@ locals {
   realm_name = local.settings["realm_name"]
   foundation_name = local.settings["foundation_name"]
   tf_bucket_name = lookup(local.settings, "cosmos_name")
-  folder_id = lookup(local.project, "folder_id", null)
-  project_prefix = local.project["project_prefix"]
-  billing_account = local.project["billing_account"]
   environment_dict = local.landscape["environments"]
   activated_apps = lookup(lookup(local.landscape["modules"], "gcp-module-project", {}), "applications", [])
 }
@@ -43,6 +40,13 @@ locals {
 locals {
   app_to_activate = lookup(var.module_app_to_activate, var.module_name, [])
   pool_configuration = { for k, v in var.app_env_config : k => v if contains(local.app_to_activate, v["app_name"]) }
+}
+
+locals {
+  project_config = yamldecode(file(var.project_file))
+  folder_id = lookup(local.project_config, "folder_id", null)
+  project_prefix = local.project_config["project_prefix"]
+  billing_account = local.project_config["billing_account"]
 }
 
 resource "google_project" "env_projects" {
@@ -99,7 +103,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 
   workload_identity_pool_id = google_iam_workload_identity_pool.github_pool[each.key].workload_identity_pool_id
   workload_identity_pool_provider_id     = "ghp-${each.value["repository_name"]}"
-  project  = each.value["project_id"]
+  project  = google_project.env_projects[each.value["env_name"]]
 
   # Provider configuration specific to GitHub
   display_name = "ghp-${each.value["repository_name"]}"
@@ -189,7 +193,7 @@ resource "github_actions_environment_variable" "action_var_project_id" {
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
   variable_name    = "PROJECT_ID"
-  value            = each.value["project_id"]
+  value            = google_project.env_projects[each.value["env_name"]]
 }
 
 resource "github_actions_environment_variable" "action_var_env_name" {

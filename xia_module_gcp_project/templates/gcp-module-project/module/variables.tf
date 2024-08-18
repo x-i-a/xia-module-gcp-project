@@ -16,7 +16,11 @@ variable "applications_file" {
 variable "module_name" {
   type = string
   description = "Module Name"
-  default = "gcp-module-project"
+}
+
+variable "config_file" {
+  type = string
+  description = "Project config file"
 }
 
 variable "environment_dict" {
