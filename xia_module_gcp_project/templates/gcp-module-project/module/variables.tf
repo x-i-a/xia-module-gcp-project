@@ -6,6 +6,7 @@ variable "module_name" {
 variable "config_file" {
   type = string
   description = "Project config file"
+  default = ""
 }
 
 variable "landscape" {
@@ -16,6 +17,11 @@ variable "landscape" {
 variable "applications" {
   type = map(any)
   description = "Application Configuration"
+}
+
+variable "modules" {
+  type = map(any)
+  description = "Module Configuration"
 }
 
 variable "environment_dict" {
