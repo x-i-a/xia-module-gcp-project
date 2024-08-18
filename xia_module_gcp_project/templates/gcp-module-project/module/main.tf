@@ -74,7 +74,7 @@ resource "google_project_service" "identity_and_access_manager_api" {
 }
 
 resource "google_iam_workload_identity_pool" "github_pool" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = var.app_env_config
 
   workload_identity_pool_id = "gh-${each.value["repository_name"]}"
   project  = google_project.env_projects[each.value["env_name"]].project_id
