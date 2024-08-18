@@ -40,6 +40,11 @@ locals {
   ]))
 }
 
+locals {
+  app_to_activate = lookup(var.module_app_to_activate, var.module_name, [])
+  env_configuration = { for k, v in var.app_env_config : k => v if contains(local.app_to_activate, v["app_name"]) }
+}
+
 resource "google_project" "env_projects" {
   for_each = var.environment_dict
 
@@ -74,7 +79,7 @@ resource "google_project_service" "identity_and_access_manager_api" {
 }
 
 resource "google_iam_workload_identity_pool" "github_pool" {
-  for_each = var.app_env_config
+  for_each = local.env_configuration
 
   workload_identity_pool_id = "gh-${each.value["repository_name"]}"
   project  = google_project.env_projects[each.value["env_name"]].project_id
