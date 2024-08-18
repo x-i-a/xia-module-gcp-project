@@ -27,7 +27,7 @@ locals {
 
   all_pool_settings = toset(flatten([
     for app_name, app in local.filtered_applications : [
-      for env_name, env in local.environment_dict : {
+      for env_name, env in var.environment_dict : {
         app_name          = app_name
         env_name          = env_name
         repository_owner  = app["repository_owner"]
@@ -41,7 +41,7 @@ locals {
 }
 
 resource "google_project" "env_projects" {
-  for_each = local.environment_dict
+  for_each = var.environment_dict
 
   name = "${local.project_prefix}${each.key}"
   project_id = "${local.project_prefix}${each.key}"
@@ -50,7 +50,7 @@ resource "google_project" "env_projects" {
 }
 
 resource "google_project_service" "service_usage_api" {
-  for_each = local.environment_dict
+  for_each = var.environment_dict
 
   project = google_project.env_projects[each.key].project_id
   service = "serviceusage.googleapis.com"
@@ -58,7 +58,7 @@ resource "google_project_service" "service_usage_api" {
 }
 
 resource "google_project_service" "cloud_resource_manager_api" {
-  for_each = local.environment_dict
+  for_each = var.environment_dict
 
   project = google_project.env_projects[each.key].project_id
   service = "cloudresourcemanager.googleapis.com"
@@ -66,7 +66,7 @@ resource "google_project_service" "cloud_resource_manager_api" {
 }
 
 resource "google_project_service" "identity_and_access_manager_api" {
-  for_each = local.environment_dict
+  for_each = var.environment_dict
 
   project = google_project.env_projects[each.key].project_id
   service = "iam.googleapis.com"
