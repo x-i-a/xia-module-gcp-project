@@ -30,7 +30,7 @@ variable "app_env_config" {
 }
 
 variable "module_app_to_activate" {
-  type = list(any)
+  type = map(list(any))
   description = "Application to be activated for all modules"
 }
 
