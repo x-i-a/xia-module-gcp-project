@@ -103,7 +103,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 
   workload_identity_pool_id = google_iam_workload_identity_pool.github_pool[each.key].workload_identity_pool_id
   workload_identity_pool_provider_id     = "ghp-${each.value["repository_name"]}"
-  project  = google_project.env_projects[each.value["env_name"]]
+  project  = google_project.env_projects[each.value["env_name"]].project_id
 
   # Provider configuration specific to GitHub
   display_name = "ghp-${each.value["repository_name"]}"
@@ -193,7 +193,7 @@ resource "github_actions_environment_variable" "action_var_project_id" {
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
   variable_name    = "PROJECT_ID"
-  value            = google_project.env_projects[each.value["env_name"]]
+  value            = google_project.env_projects[each.value["env_name"]].project_id
 }
 
 resource "github_actions_environment_variable" "action_var_env_name" {
