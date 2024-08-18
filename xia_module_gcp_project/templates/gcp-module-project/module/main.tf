@@ -42,7 +42,7 @@ locals {
 
 locals {
   app_to_activate = lookup(var.module_app_to_activate, var.module_name, [])
-  env_configuration = { for k, v in var.app_env_config : k => v if contains(local.app_to_activate, v["app_name"]) }
+  pool_configuration = { for k, v in var.app_env_config : k => v if contains(local.app_to_activate, v["app_name"]) }
 }
 
 resource "google_project" "env_projects" {
@@ -79,7 +79,7 @@ resource "google_project_service" "identity_and_access_manager_api" {
 }
 
 resource "google_iam_workload_identity_pool" "github_pool" {
-  for_each = local.env_configuration
+  for_each = local.pool_configuration
 
   workload_identity_pool_id = "gh-${each.value["repository_name"]}"
   project  = google_project.env_projects[each.value["env_name"]].project_id
@@ -95,7 +95,7 @@ resource "google_iam_workload_identity_pool" "github_pool" {
 }
 
 resource "google_iam_workload_identity_pool_provider" "github_provider" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   workload_identity_pool_id = google_iam_workload_identity_pool.github_pool[each.key].workload_identity_pool_id
   workload_identity_pool_provider_id     = "ghp-${each.value["repository_name"]}"
@@ -123,7 +123,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 }
 
 resource "google_service_account" "github_provider_sa" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
   project      = google_project.env_projects[each.value["env_name"]].project_id
   account_id   = "wip-${each.value["app_name"]}-sa"
   display_name = "Service Account for Identity Pool provider of ${each.value["app_name"]}"
@@ -132,7 +132,7 @@ resource "google_service_account" "github_provider_sa" {
 }
 
 resource "google_service_account_iam_binding" "workload_identity_binding" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
   service_account_id = google_service_account.github_provider_sa[each.key].id
   role               = "roles/iam.workloadIdentityUser"
   members = [
@@ -141,14 +141,14 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
 }
 
 resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
   bucket = local.tf_bucket_name
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
 }
 
 resource "github_actions_environment_variable" "action_var_cosmos_name" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -157,7 +157,7 @@ resource "github_actions_environment_variable" "action_var_cosmos_name" {
 }
 
 resource "github_actions_environment_variable" "action_var_realm_name" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -166,7 +166,7 @@ resource "github_actions_environment_variable" "action_var_realm_name" {
 }
 
 resource "github_actions_environment_variable" "action_var_foundation_name" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -175,7 +175,7 @@ resource "github_actions_environment_variable" "action_var_foundation_name" {
 }
 
 resource "github_actions_environment_variable" "action_var_app_name" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -184,7 +184,7 @@ resource "github_actions_environment_variable" "action_var_app_name" {
 }
 
 resource "github_actions_environment_variable" "action_var_project_id" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -193,7 +193,7 @@ resource "github_actions_environment_variable" "action_var_project_id" {
 }
 
 resource "github_actions_environment_variable" "action_var_env_name" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -202,7 +202,7 @@ resource "github_actions_environment_variable" "action_var_env_name" {
 }
 
 resource "github_actions_environment_variable" "action_var_wip_name" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
@@ -211,7 +211,7 @@ resource "github_actions_environment_variable" "action_var_wip_name" {
 }
 
 resource "github_actions_environment_variable" "action_var_sa_email" {
-  for_each = { for s in local.all_pool_settings : "${s.app_name}-${s.env_name}" => s }
+  for_each = local.pool_configuration
 
   repository       = each.value["repository_name"]
   environment      = each.value["env_name"]
