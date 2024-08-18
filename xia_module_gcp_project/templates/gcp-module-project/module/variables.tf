@@ -23,6 +23,16 @@ variable "config_file" {
   description = "Project config file"
 }
 
+variable "landscape" {
+  type = map(any)
+  description = "Landscape Configuration"
+}
+
+variable "applications" {
+  type = map(map(any))
+  description = "Application Configuration"
+}
+
 variable "environment_dict" {
   type = map(any)
   description = "Environment Configuration"

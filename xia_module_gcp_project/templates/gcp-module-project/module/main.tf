@@ -7,37 +7,12 @@ terraform {
 }
 
 locals {
-  project = yamldecode(file(var.project_file))
-  landscape = yamldecode(file(var.landscape_file))
-  applications = yamldecode(file(var.applications_file))
-  settings = lookup(local.landscape, "settings", {})
+  applications = var.applications
+  settings = lookup(var.landscape, "settings", {})
   cosmos_name = local.settings["cosmos_name"]
   realm_name = local.settings["realm_name"]
   foundation_name = local.settings["foundation_name"]
   tf_bucket_name = lookup(local.settings, "cosmos_name")
-  environment_dict = local.landscape["environments"]
-  activated_apps = lookup(lookup(local.landscape["modules"], "gcp-module-project", {}), "applications", [])
-}
-
-locals {
-  filtered_applications = { for app_name, app in local.applications : app_name => app if contains(local.activated_apps, app_name) }
-
-  all_pool_settings = toset(flatten([
-    for app_name, app in local.filtered_applications : [
-      for env_name, env in var.environment_dict : {
-        app_name          = app_name
-        env_name          = env_name
-        repository_owner  = app["repository_owner"]
-        repository_name   = app["repository_name"]
-        project_id        = "${local.project_prefix}${env_name}"
-        match_branch      = env["match_branch"]
-        match_event       = lookup(env, "match_event", "push")
-      }
-    ]
-  ]))
-}
-
-locals {
   app_to_activate = lookup(var.module_app_to_activate, var.module_name, [])
   pool_configuration = { for k, v in var.app_env_config : k => v if contains(local.app_to_activate, v["app_name"]) }
 }
