@@ -119,13 +119,6 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
   ]
 }
 
-resource "google_storage_bucket_iam_member" "tfstate_bucket_list" {
-  for_each = local.pool_configuration
-  bucket = local.tf_bucket_name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.github_provider_sa[each.key].email}"
-}
-
 resource "github_actions_environment_variable" "action_var_cosmos_name" {
   for_each = local.pool_configuration
 
