@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    github = {
+      source  = "integrations/github"
+    }
+  }
+}
+
 locals {
   applications = var.applications
   settings = lookup(var.landscape, "settings", {})
