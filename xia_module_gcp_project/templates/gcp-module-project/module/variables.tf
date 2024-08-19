@@ -39,3 +39,7 @@ variable "module_app_to_activate" {
   description = "Application to be activated for all modules"
 }
 
+variable "github_config" {
+  type = map(any)
+  description = "Github Configuration"
+}
