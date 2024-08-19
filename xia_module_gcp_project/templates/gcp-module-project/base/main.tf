@@ -1,7 +1,3 @@
-provider "github" {
-  owner = lookup(yamldecode(file("../../../config/core/github.yaml"))["settings"], "github_owner", null)
-}
-
 module "gcp_module_project" {
   source = "../../modules/gcp-module-project"
 
