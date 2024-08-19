@@ -2,7 +2,7 @@ module "gcp_module_project" {
   source = "../../modules/gcp-module-project"
 
   module_name = "gcp-module-project"
-  config_file = "../../../config/infra/gcp-project.yaml"
+  config_file = "../../../config/platform/gcp-project.yaml"
   landscape = local.landscape
   applications = local.applications
   modules = local.modules
