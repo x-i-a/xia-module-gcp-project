@@ -15,10 +15,7 @@ locals {
   settings = lookup(local.landscape, "settings", {})
   cosmos_org = local.settings["cosmos_org"]
   cosmos_name = local.settings["cosmos_name"]
-  cosmos_bucket = lookup(local.settings, "cosmos_bucket", local.cosmos_name)
   cosmos_project = local.settings["cosmos_project"]
-  structure = local.landscape["structure"]
-  github_owner = lookup(local.settings, "github_owner", "")
 }
 
 resource "google_project_service" "service_usage_api" {
