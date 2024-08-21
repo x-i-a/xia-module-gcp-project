@@ -8,6 +8,6 @@ module "activate_gcp_module_project" {
   foundations = local.foundations
 
   foundation_folders = module.gcp_module_organization.foundation_folders
-  foundation_admin_sa = module.gcp_module_organization
+  foundation_admin_sa = module.gcp_module_organization.foundation_admin_sa
   depends_on = [module.gcp_module_organization]
 }
