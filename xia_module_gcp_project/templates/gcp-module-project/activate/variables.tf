@@ -33,3 +33,13 @@ variable "level_3_realms" {
   type = map(any)
   description = "Level 3 Realm  Configuration"
 }
+
+variable "foundation_folders" {
+  type = map(map(any))
+  description = "Foundation Folders"
+}
+
+variable "foundation_admin_sa" {
+  type = map(map(any))
+  description = "Foundation admin service account dict"
+}
