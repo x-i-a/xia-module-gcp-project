@@ -11,6 +11,7 @@ data "google_organization" "cosmos_org" {
 }
 
 locals {
+  module_name = coalesce(var.module_name, basename(path.module))
   landscape = var.landscape
   settings = lookup(local.landscape, "settings", {})
   cosmos_org = local.settings["cosmos_org"]
@@ -71,13 +72,6 @@ resource "google_service_account" "foundation_admin_sa" {
   account_id   = "adm-${each.value["name"]}-sa"
   display_name = "Service Account for Foundation Directory ${each.value["name"]}"
   depends_on = [google_folder.foundation_folders]
-}
-
-resource "google_folder_iam_member" "foundation_admin_sa_owner" {
-  for_each = var.foundations
-  folder = google_folder.foundation_folders[each.key].name
-  role = "roles/owner"
-  member = "serviceAccount:${google_service_account.foundation_admin_sa[each.key].email}"
 }
 
 resource "google_iam_workload_identity_pool" "github_pool" {

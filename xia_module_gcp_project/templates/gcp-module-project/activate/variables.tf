@@ -1,6 +1,7 @@
 variable "module_name" {
   type = string
   description = "Module Name"
+  default = ""
 }
 
 variable "config_file" {
