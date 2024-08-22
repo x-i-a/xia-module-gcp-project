@@ -117,3 +117,27 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
 }
+
+resource "github_actions_variable" "var_project_id" {
+  for_each         = var.foundations
+
+  repository       = each.value["repository_name"]
+  variable_name    = "PROJECT_ID"
+  value            = local.cosmos_project
+}
+
+resource "github_actions_variable" "var_wip_name" {
+  for_each         = var.foundations
+
+  repository       = each.value["repository_name"]
+  variable_name    = "SECRET_WIP_NAME"
+  value            = google_iam_workload_identity_pool_provider.github_provider[each.key].name
+}
+
+resource "github_actions_variable" "var_sa_email" {
+  for_each         = var.foundations
+
+  repository       = each.value["repository_name"]
+  variable_name    = "PROVIDER_SA_EMAIL"
+  value            = google_service_account.foundation_admin_sa[each.key].email
+}
