@@ -102,7 +102,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
   description  = "Provider for GitHub Actions of ${each.value["name"]}"
 
    # Attribute mapping / condition from the OIDC token to Google Cloud attributes
-  attribute_condition = "assertion.sub == 'repo:${each.value["repository_owner"]}/${each.value["repository_name"]}' && assertion.ref.matches('refs/heads/main')"
+  attribute_condition = "assertion.sub == 'repo:${each.value["repository_owner"]}/${each.value["repository_name"]}:' && assertion.ref.matches('refs/heads/main')"
 
   attribute_mapping = {
     "google.subject" = "assertion.sub",
