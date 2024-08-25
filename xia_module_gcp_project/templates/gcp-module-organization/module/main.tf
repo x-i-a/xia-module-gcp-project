@@ -118,6 +118,15 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
   }
 }
 
+resource "google_service_account_iam_binding" "workload_identity_binding" {
+  for_each = var.foundations
+  service_account_id = google_service_account.foundation_admin_sa[each.key].id
+  role               = "roles/iam.workloadIdentityUser"
+  members = [
+    "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool[each.key].name}/attribute.repository/${each.value["repository_owner"]}/${each.value["repository_name"]}"
+  ]
+}
+
 resource "github_actions_variable" "var_project_id" {
   for_each         = var.foundations
 
