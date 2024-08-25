@@ -4,6 +4,7 @@ provider "google" {
 
 provider "github" {
   alias = "github-gcp-project"
+  owner = lookup(yamldecode(file("../../../config/core/github.yaml")), "github_owner", null)
 }
 
 module "gcp_module_project" {

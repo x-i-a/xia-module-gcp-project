@@ -4,6 +4,7 @@ provider "google" {
 
 provider "github" {
   alias = "github-gcp-org"
+  owner = lookup(yamldecode(file("../../../config/core/github.yaml")), "github_owner", null)
 }
 
 module "gcp_module_organization" {
