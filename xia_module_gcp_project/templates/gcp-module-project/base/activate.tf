@@ -1,4 +1,17 @@
+provider "google" {
+  alias = "activate-google-gcp-project"
+}
+
+provider "github" {
+  alias = "activate-github-gcp-project"
+}
+
 module "activate_gcp_module_project" {
+  providers = {
+    google = google.activate-google-gcp-project
+    github = github.activate-github-gcp-project
+  }
+
   source = "../../modules/activate-gcp-module-project"
 
   landscape = local.landscape

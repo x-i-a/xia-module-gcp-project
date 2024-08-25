@@ -1,4 +1,17 @@
+provider "google" {
+  alias = "google-gcp-project"
+}
+
+provider "github" {
+  alias = "github-gcp-project"
+}
+
 module "gcp_module_project" {
+  providers = {
+    google = google.google-gcp-project
+    github = github.github-gcp-project
+  }
+
   source = "../../modules/gcp-module-project"
 
   module_name = "gcp-module-project"
