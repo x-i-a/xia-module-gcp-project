@@ -15,6 +15,7 @@ module "gcp_module_organization" {
 
   source = "../../modules/gcp-module-organization"
 
+  config_file = "../../../config/platform/gcp-org.yaml"
   landscape = local.landscape
   level_1_realms = local.level_1_realms
   level_2_realms = local.level_2_realms
