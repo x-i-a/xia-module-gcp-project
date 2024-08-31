@@ -24,7 +24,7 @@ locals {
   project_config = yamldecode(file(var.config_file))
   folder_id = lookup(local.project_config, "folder_id", null)
   project_prefix = local.project_config["project_prefix"]
-  billing_account = local.project_config["billing_account"]
+  billing_account = lookup(local.project_config, "billing_account", null)
 }
 
 resource "google_project" "env_projects" {
