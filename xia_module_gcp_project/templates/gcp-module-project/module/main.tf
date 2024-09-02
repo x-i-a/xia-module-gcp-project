@@ -122,7 +122,7 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
   ]
 }
 
-resource "github_actions_variable" "action_var_project_id" {
+resource "github_actions_variable" "action_var_project_prefix" {
   for_each = local.applications
 
   repository       = each.value["repository_name"]
