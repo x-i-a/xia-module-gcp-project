@@ -122,6 +122,14 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
   ]
 }
 
+resource "github_actions_variable" "action_var_project_id" {
+  for_each = local.applications
+
+  repository       = each.value["repository_name"]
+  variable_name    = "GCP_PROJECT_PREFIX"
+  value            = local.project_prefix
+}
+
 resource "github_actions_environment_variable" "action_var_project_id" {
   for_each = local.pool_configuration
 
