@@ -21,4 +21,6 @@ module "gcp_module_organization" {
   level_2_realms = local.level_2_realms
   level_3_realms = local.level_3_realms
   foundations = local.foundations
+
+  depends_on = [module.gh-module-foundation]
 }
