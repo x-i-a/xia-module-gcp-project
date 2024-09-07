@@ -23,6 +23,7 @@ locals {
 }
 
 data "google_organization" "cosmos_org" {
+  count = local.cosmos_org == null ? 0 : 1
   domain = local.cosmos_org
 }
 
@@ -47,7 +48,7 @@ resource "google_project_service" "identity_and_access_manager_api" {
 resource "google_folder" "realm_l1_folders" {
   for_each = var.level_1_realms
   display_name = each.value["name"]
-  parent       = "organizations/${data.google_organization.cosmos_org.org_id}"
+  parent       = "organizations/${data.google_organization.cosmos_org[0].org_id}"
 }
 
 resource "google_folder" "realm_l2_folders" {
@@ -69,7 +70,7 @@ resource "google_folder" "foundation_folders" {
     lookup(lookup(google_folder.realm_l1_folders, each.value["parent"], {}), "name", ""),
     lookup(lookup(google_folder.realm_l2_folders, each.value["parent"], {}), "name", ""),
     lookup(lookup(google_folder.realm_l3_folders, each.value["parent"], {}), "name", ""),
-    "organizations/${data.google_organization.cosmos_org.org_id}"
+    "organizations/${data.google_organization.cosmos_org[0].org_id}"
   )
 }
 
