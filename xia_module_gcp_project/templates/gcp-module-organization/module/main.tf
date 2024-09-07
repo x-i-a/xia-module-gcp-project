@@ -46,25 +46,25 @@ resource "google_project_service" "identity_and_access_manager_api" {
 }
 
 resource "google_folder" "realm_l1_folders" {
-  for_each = local.cosmos_org == null ? toset([]) : var.level_1_realms
+  for_each = local.cosmos_org == null ? {} : var.level_1_realms
   display_name = each.value["name"]
   parent       = "organizations/${data.google_organization.cosmos_org[0].org_id}"
 }
 
 resource "google_folder" "realm_l2_folders" {
-  for_each = local.cosmos_org == null ? toset([]) : var.level_2_realms
+  for_each = local.cosmos_org == null ? {} : var.level_2_realms
   display_name = each.value["name"]
   parent       = google_folder.realm_l1_folders[each.value["parent"]].name
 }
 
 resource "google_folder" "realm_l3_folders" {
-  for_each = local.cosmos_org == null ? toset([]) : var.level_3_realms
+  for_each = local.cosmos_org == null ? {} : var.level_3_realms
   display_name = each.value["name"]
   parent       = google_folder.realm_l2_folders[each.value["parent"]].name
 }
 
 resource "google_folder" "foundation_folders" {
-  for_each = local.cosmos_org == null ? toset([]) : var.foundations
+  for_each = local.cosmos_org == null ? {} : var.foundations
   display_name = each.value["name"]
   parent       = coalesce(
     lookup(lookup(google_folder.realm_l1_folders, each.value["parent"], {}), "name", ""),
