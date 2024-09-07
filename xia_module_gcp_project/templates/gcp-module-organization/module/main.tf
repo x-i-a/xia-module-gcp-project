@@ -14,12 +14,12 @@ locals {
   landscape = var.landscape
   settings = lookup(local.landscape, "settings", {})
   cosmos_name = local.settings["cosmos_name"]
+  cosmos_project = local.settings["cosmos_project"]
 }
 
 locals {
   org_config = yamldecode(file(var.config_file))
   cosmos_org = local.org_config["cosmos_org"]
-  cosmos_project = local.org_config["cosmos_project"]
 }
 
 data "google_organization" "cosmos_org" {
