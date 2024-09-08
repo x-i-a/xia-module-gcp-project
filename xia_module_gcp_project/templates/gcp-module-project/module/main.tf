@@ -34,6 +34,7 @@ resource "google_project" "env_projects" {
   project_id = "${local.project_prefix}${each.key}"
   folder_id = local.folder_id
   billing_account = local.billing_account
+
 }
 
 resource "google_project_service" "service_usage_api" {
@@ -42,6 +43,7 @@ resource "google_project_service" "service_usage_api" {
   project = google_project.env_projects[each.key].project_id
   service = "serviceusage.googleapis.com"
   disable_on_destroy = false
+  deletion_policy = "DELETE"
 }
 
 resource "google_project_service" "cloud_resource_manager_api" {
