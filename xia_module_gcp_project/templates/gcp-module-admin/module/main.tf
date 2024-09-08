@@ -23,6 +23,12 @@ resource "google_service_account" "cosmos_admin_sa" {
   display_name = "Cosmos Administrator Service Account"
 }
 
+resource "google_project_iam_member" "cosmos_admin_sa_owner" {
+  project = local.cosmos_project
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.cosmos_admin_sa.email}"
+}
+
 resource "google_iam_workload_identity_pool" "github_pool" {
 
   workload_identity_pool_id = "wip-cosmos"
